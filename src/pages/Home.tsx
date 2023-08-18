@@ -22,6 +22,7 @@ function Home() {
     const { value } = event.target;
     setSearch(value);
   };
+  const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
 
   useEffect(() => {
     async function fetchCategories() {
