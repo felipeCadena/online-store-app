@@ -1,15 +1,23 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import { getCategories } from '../services/api';
+import { getCategories, getProductsFromCategoryAndQuery } from '../services/api';
 
 type Category = {
   id: string,
   name: string,
 };
 
+type Product = {
+  id: string,
+  title: string,
+  thumbnail: string,
+  price: string,
+};
+
 function Home() {
   const [search, setSearch] = useState('');
   const [categories, setCategories] = useState<Category[]>([]);
+  const [products, setProducts] = useState<Product[]>([]);
   const handleSearch = (event:React.ChangeEvent<HTMLInputElement>) => {
     const { value } = event.target;
     setSearch(value);
@@ -24,6 +32,11 @@ function Home() {
     fetchCategories();
   }, []);
 
+  const searchProduct = async () => {
+    const responseProduct = await getProductsFromCategoryAndQuery(search, search);
+    setProducts(responseProduct.results);
+  };
+
   return (
     <>
       <label>
@@ -31,7 +44,14 @@ function Home() {
           name="search"
           value={ search }
           onChange={ handleSearch }
+          data-testid="query-input"
         />
+        <button
+          onClick={ searchProduct }
+          data-testid="query-button"
+        >
+          Procurar
+        </button>
       </label>
       {search.length === 0 ? (
         <div>
@@ -60,6 +80,28 @@ function Home() {
           ))}
         </ul>
       </div>
+      {products.length > 0 && (
+        <div>
+          {products.map((product) => (
+            <div
+              key={ product.id }
+              data-testid="product"
+            >
+              <p>
+                { product.title }
+              </p>
+              <img src={ product.thumbnail } alt="Imagem do Produto" />
+              <p>
+                R$
+                { product.price }
+              </p>
+            </div>
+          ))}
+        </div>
+      )}
+      {products.length === 0 && (
+        <h2>Nenhum produto foi encontrado</h2>
+      )}
     </>
   );
 }
