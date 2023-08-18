@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { Link } from 'react-router-dom';
 
 function Home() {
   const [search, setSearch] = useState('');
@@ -17,9 +18,14 @@ function Home() {
         />
       </label>
       {search.length === 0 ? (
-        <h3 data-testid="home-initial-message">
-          Digite algum termo de pesquisa ou escolha uma categoria.
-        </h3>
+        <div>
+          <h3 data-testid="home-initial-message">
+            Digite algum termo de pesquisa ou escolha uma categoria.
+          </h3>
+          <Link to="/carrinho" data-testid="shopping-cart-button">
+            Ir para o Carrinho de Compras
+          </Link>
+        </div>
       ) : null}
     </>
   );
