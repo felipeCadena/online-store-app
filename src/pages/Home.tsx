@@ -38,6 +38,18 @@ function Home() {
     setProducts(responseProduct.results);
   };
 
+  const handleCategoryClick = async (category:string) => {
+    const responseCategory = await getProductsFromCategoryAndQuery(category, search);
+    setProducts(responseCategory.results);
+    setSelectedCategory(category);
+  };
+
+  // criar uma arrow function que seá usada no onClick
+  // dentro da função primeiro atualizar a categoria selecionada
+  // após o passo anterior executar a requisição para pegar os produtos
+  // finalizar a função
+  // esta função deverá ser chamada no onClick da categoria
+
   return (
     <>
       <label>
@@ -74,6 +86,7 @@ function Home() {
                   type="radio"
                   name="category"
                   value={ id }
+                  onClick={ () => handleCategoryClick(id) }
                 />
                 { name }
               </label>
