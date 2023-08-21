@@ -22,6 +22,7 @@ function Home() {
     const { value } = event.target;
     setSearch(value);
   };
+  const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
 
   useEffect(() => {
     async function fetchCategories() {
@@ -33,9 +34,21 @@ function Home() {
   }, []);
 
   const searchProduct = async () => {
-    const responseProduct = await getProductsFromCategoryAndQuery(search, search);
+    const responseProduct = await getProductsFromCategoryAndQuery('', search);
     setProducts(responseProduct.results);
   };
+
+  const handleCategoryClick = async (category:string) => {
+    setSelectedCategory(category);
+    const responseCategory = await getProductsFromCategoryAndQuery(category, '');
+    setProducts(responseCategory.results);
+  };
+
+  // criar uma arrow function que seá usada no onClick
+  // dentro da função primeiro atualizar a categoria selecionada
+  // após o passo anterior executar a requisição para pegar os produtos
+  // finalizar a função
+  // esta função deverá ser chamada no onClick da categoria
 
   return (
     <>
@@ -70,9 +83,11 @@ function Home() {
             <li key={ id }>
               <label data-testid="category" htmlFor={ id }>
                 <input
+                  id={ id }
                   type="radio"
                   name="category"
                   value={ id }
+                  onClick={ () => handleCategoryClick(id) }
                 />
                 { name }
               </label>
@@ -80,27 +95,31 @@ function Home() {
           ))}
         </ul>
       </div>
-      {products.length > 0 && (
+      {selectedCategory && (
         <div>
-          {products.map((product) => (
-            <div
-              key={ product.id }
-              data-testid="product"
-            >
-              <p>
-                { product.title }
-              </p>
-              <img src={ product.thumbnail } alt="Imagem do Produto" />
-              <p>
-                R$
-                { product.price }
-              </p>
+          {products.length > 0 && (
+            <div>
+              {products.map((product) => (
+                <div
+                  key={ product.id }
+                  data-testid="product"
+                >
+                  <p>
+                    { product.title }
+                  </p>
+                  <img src={ product.thumbnail } alt="Imagem do Produto" />
+                  <p>
+                    R$
+                    { product.price }
+                  </p>
+                </div>
+              ))}
             </div>
-          ))}
+          )}
+          {products.length === 0 && (
+            <h2>Nenhum produto foi encontrado</h2>
+          )}
         </div>
-      )}
-      {products.length === 0 && (
-        <h2>Nenhum produto foi encontrado</h2>
       )}
     </>
   );
