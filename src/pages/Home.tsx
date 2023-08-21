@@ -34,14 +34,14 @@ function Home() {
   }, []);
 
   const searchProduct = async () => {
-    const responseProduct = await getProductsFromCategoryAndQuery(search, search);
+    const responseProduct = await getProductsFromCategoryAndQuery('', search);
     setProducts(responseProduct.results);
   };
 
   const handleCategoryClick = async (category:string) => {
-    const responseCategory = await getProductsFromCategoryAndQuery(category, search);
-    setProducts(responseCategory.results);
     setSelectedCategory(category);
+    const responseCategory = await getProductsFromCategoryAndQuery(category, '');
+    setProducts(responseCategory.results);
   };
 
   // criar uma arrow function que seá usada no onClick
@@ -83,6 +83,7 @@ function Home() {
             <li key={ id }>
               <label data-testid="category" htmlFor={ id }>
                 <input
+                  id={ id }
                   type="radio"
                   name="category"
                   value={ id }
@@ -94,27 +95,31 @@ function Home() {
           ))}
         </ul>
       </div>
-      {products.length > 0 && (
+      {selectedCategory && (
         <div>
-          {products.map((product) => (
-            <div
-              key={ product.id }
-              data-testid="product"
-            >
-              <p>
-                { product.title }
-              </p>
-              <img src={ product.thumbnail } alt="Imagem do Produto" />
-              <p>
-                R$
-                { product.price }
-              </p>
+          {products.length > 0 && (
+            <div>
+              {products.map((product) => (
+                <div
+                  key={ product.id }
+                  data-testid="product"
+                >
+                  <p>
+                    { product.title }
+                  </p>
+                  <img src={ product.thumbnail } alt="Imagem do Produto" />
+                  <p>
+                    R$
+                    { product.price }
+                  </p>
+                </div>
+              ))}
             </div>
-          ))}
+          )}
+          {products.length === 0 && (
+            <h2>Nenhum produto foi encontrado</h2>
+          )}
         </div>
-      )}
-      {products.length === 0 && (
-        <h2>Nenhum produto foi encontrado</h2>
       )}
     </>
   );
